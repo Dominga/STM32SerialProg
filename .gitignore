@@ -52,3 +52,8 @@ docs/_build/
 
 # PyBuilder
 target/
+
+
+#binary files
+*.bin
+*.hex

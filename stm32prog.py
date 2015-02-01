@@ -1,7 +1,7 @@
 __author__ = 'lex'
 
 #import sys, os.path
-
+import argparse
 import time
 import struct
 from serial import Serial, EIGHTBITS, PARITY_EVEN
@@ -92,7 +92,22 @@ def Connect(timeout=0.1):
     print 'Connect'
     return True
 
-ser = Serial('/dev/tty.usbserial', baudrate=115200, bytesize=EIGHTBITS, parity=PARITY_EVEN, timeout=0)
+
+parser = argparse.ArgumentParser(description="USART programmer for STM32F1xx, STM32F2xx, SMT32F3xx, STM32F4xx, STM32L0xx, STM32L1xx devices")
+
+parser.add_argument('-p', required=True, help="Serial port")
+parser.add_argument('-s', required=True, choices=['32k', '64k', '128k', '256k', '512k', '768k', '1024k'], help="Flash size.")
+parser.add_argument('-b', '--baudrate', type=int, default=115200, help="Baudrate for serial port. Default 115200")
+parser.add_argument('-t', '--timeout', type=int, default=10, help="Connect timeout in sec. Default is 10 s.")
+parser.add_argument('-f', '--format', choices=['bin', 'ihex'], default='bin', help="File format. bin - binary or ihex - Intel hex. Default bin.")
+parser.add_argument('file', type=argparse.FileType('r'), help="file to program")
+
+
+args = parser.parse_args()
+
+print args
+
+ser = Serial(args.p, baudrate=args.baudrate, bytesize=EIGHTBITS, parity=PARITY_EVEN, timeout=0)
 
 Connect()
 cmd_GetVersion()
